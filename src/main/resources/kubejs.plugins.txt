@@ -1,0 +1,1 @@
+nadiendev.kubejsastralsorcery.AstralSorceryKubeJSPlugin astralsorcery
