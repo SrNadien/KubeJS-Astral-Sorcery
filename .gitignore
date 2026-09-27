@@ -1,3 +1,41 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+runs
+run-data
+
+repo
+src/generated/resources/.cache
+src/generated/resources/.cache/*
+src\generated\resources\.cache
+.github\modernize
+
+
+# logs
+run-*.log
+run-*.exit
+run-gametest
+run-showcase
+
 ### AL ###
 #Template for AL projects for Dynamics 365 Business Central
 #launch.json folder

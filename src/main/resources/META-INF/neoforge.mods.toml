@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "${issue_tracker}"
+
+[[mixins]]
+config = "${mod_id}.mixins.json"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+authors = "${mod_authors}"
+displayName = "Astral Sorcery KubeJS Addon"
+description = '''${mod_description}'''
+
+[[dependencies.${mod_id}]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "${neo_version_range}"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "kubejs"
+    type = "required"
+    versionRange = "${kubejs_version_range}"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "astralsorcery"
+    type = "required"
+    versionRange = "${astralsorcery_version_range}"
+    ordering = "BEFORE"
+    side = "BOTH"
