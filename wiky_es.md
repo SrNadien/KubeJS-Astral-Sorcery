@@ -1,6 +1,6 @@
 # Astral Sorcery KJS
 
-[English](wiky.md) · **Español**
+[English](wiky.md) · **Español** · [简体中文](wiky_zh_cn.md)
 
 Soporte de KubeJS para **Astral Sorcery 2.0** (Minecraft 1.21.1, NeoForge). Con este addon puedes:
 
