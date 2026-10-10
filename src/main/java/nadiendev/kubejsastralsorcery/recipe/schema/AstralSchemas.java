@@ -25,8 +25,8 @@ import hellfirepvp.astralsorcery.common.recipe.altar.output.AltarRecipeOutputMod
 import hellfirepvp.astralsorcery.common.recipe.liquid.interaction.result.LiquidInteractionResult;
 import hellfirepvp.astralsorcery.common.recipe.liquid.output.LiquidStarlightRecipeOutputModifier;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
-import hellfirepvp.astralsorcery.common.util.data.CountIngredient;
 import nadiendev.kubejsastralsorcery.AstralSorceryKJS;
+import nadiendev.kubejsastralsorcery.recipe.AstralFormat;
 import nadiendev.kubejsastralsorcery.recipe.component.AstralComponents;
 import nadiendev.kubejsastralsorcery.recipe.component.NestedComponent;
 import nadiendev.kubejsastralsorcery.recipe.kube.AltarKubeRecipe;
@@ -43,6 +43,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.List;
@@ -64,6 +65,14 @@ public interface AstralSchemas {
         return new KubeRecipeFactory(AstralSorceryKJS.id(name), type, supplier);
     }
 
+    static String k(String camel) {
+        return AstralFormat.key(camel);
+    }
+
+    static String o(String camel) {
+        return AstralFormat.other(AstralFormat.key(camel));
+    }
+
     static <T> ListRecipeComponent<T> list(RecipeComponent<T> component) {
         return ListRecipeComponent.create(component, false, false, IntBounds.OPTIONAL, Optional.empty());
     }
@@ -79,19 +88,19 @@ public interface AstralSchemas {
     RecipeKey<List<ItemStack>> ALTAR_OUTPUTS = ITEM.asList().outputKey("outputs");
     RecipeKey<List<String>> ALTAR_PATTERN = new NestedComponent<>(STRING.asList(), "grid").otherKey("pattern");
     RecipeKey<TinyMap<Character, IngredientBridge>> ALTAR_KEY = new NestedComponent<>(AstralComponents.of(AstralComponents.INGREDIENT_BRIDGE).asPatternKey(), "grid").inputKey("key");
-    RecipeKey<List<String>> ALTAR_RELAY = new NestedComponent<>(STRING.asList(), "grid").otherKey("relayPattern").optional(EMPTY_RELAY).alwaysWrite().functionNames("relay", "relayPattern");
-    RecipeKey<TileAltar.AltarType> ALTAR_TYPE = AstralComponents.of(AstralComponents.ALTAR_TYPE).otherKey("requiredType").optional(TileAltar.AltarType.ILLUMINATION).alwaysWrite().functionNames("requiredType", "tier", "altarTier");
-    RecipeKey<BaseConstellation> ALTAR_FOCUS = CONSTELLATION.otherKey("focusConstellation").defaultOptional().functionNames("constellation", "focus", "focusConstellation");
-    RecipeKey<Float> ALTAR_SHATTER = NumberComponent.FLOAT.otherKey("baseFocusShatterChance").optional(0F).alwaysWrite().functionNames("shatterChance", "focusShatterChance", "baseFocusShatterChance");
+    RecipeKey<List<String>> ALTAR_RELAY = new NestedComponent<>(STRING.asList(), "grid").otherKey(k("relayPattern")).alt(o("relayPattern")).optional(EMPTY_RELAY).alwaysWrite().functionNames("relay", "relayPattern");
+    RecipeKey<TileAltar.AltarType> ALTAR_TYPE = AstralComponents.of(AstralComponents.ALTAR_TYPE).otherKey(k("requiredType")).alt(o("requiredType")).optional(TileAltar.AltarType.ILLUMINATION).alwaysWrite().functionNames("requiredType", "tier", "altarTier");
+    RecipeKey<BaseConstellation> ALTAR_FOCUS = CONSTELLATION.otherKey(k("focusConstellation")).alt(o("focusConstellation")).defaultOptional().functionNames("constellation", "focus", "focusConstellation");
+    RecipeKey<Float> ALTAR_SHATTER = NumberComponent.FLOAT.otherKey(k("baseFocusShatterChance")).alt(o("baseFocusShatterChance")).optional(0F).alwaysWrite().functionNames("shatterChance", "focusShatterChance", "baseFocusShatterChance");
     RecipeKey<Integer> ALTAR_DURATION = duration(100);
-    RecipeKey<Boolean> ALTAR_ONLY_NIGHT = BooleanComponent.BOOLEAN.instance().otherKey("onlyNight").optional(true).alwaysWrite();
-    RecipeKey<Boolean> ALTAR_MAY_CHAIN = BooleanComponent.BOOLEAN.instance().otherKey("mayChain").optional(false).alwaysWrite();
-    RecipeKey<List<BaseConstellation>> ALTAR_STARLIGHT = list(CONSTELLATION).otherKey("requiredStarlight").optional(List.of()).alwaysWrite().functionNames("requiredStarlight");
-    RecipeKey<List<LumenStack>> ALTAR_LUMEN = list(AstralComponents.of(AstralComponents.LUMEN_STACK)).otherKey("requiredLumen").optional(List.of()).alwaysWrite().functionNames("requiredLumen");
-    RecipeKey<List<FluidStack>> ALTAR_FLUIDS = list(FluidStackComponent.FLUID_STACK.instance()).inputKey("requiredFluid").optional(List.of()).alwaysWrite().functionNames("requiredFluid");
-    RecipeKey<List<CountIngredient>> ALTAR_ADDITIONAL = list(AstralComponents.of(AstralComponents.COUNT_INGREDIENT)).inputKey("requiredAdditionalInputs").optional(List.of()).alwaysWrite().functionNames("requiredAdditionalInputs", "additionalInputs");
+    RecipeKey<Boolean> ALTAR_ONLY_NIGHT = BooleanComponent.BOOLEAN.instance().otherKey(k("onlyNight")).alt(o("onlyNight")).optional(true).alwaysWrite();
+    RecipeKey<Boolean> ALTAR_MAY_CHAIN = BooleanComponent.BOOLEAN.instance().otherKey(k("mayChain")).alt(o("mayChain")).optional(false).alwaysWrite();
+    RecipeKey<List<BaseConstellation>> ALTAR_STARLIGHT = list(CONSTELLATION).otherKey(k("requiredStarlight")).alt(o("requiredStarlight")).optional(List.of()).alwaysWrite().functionNames("requiredStarlight");
+    RecipeKey<List<LumenStack>> ALTAR_LUMEN = list(AstralComponents.of(AstralComponents.LUMEN_STACK)).otherKey(k("requiredLumen")).alt(o("requiredLumen")).optional(List.of()).alwaysWrite().functionNames("requiredLumen");
+    RecipeKey<List<FluidStack>> ALTAR_FLUIDS = list(FluidStackComponent.FLUID_STACK.instance()).inputKey(k("requiredFluid")).alt(o("requiredFluid")).optional(List.of()).alwaysWrite().functionNames("requiredFluid");
+    RecipeKey<List<SizedIngredient>> ALTAR_ADDITIONAL = list(AstralComponents.of(AstralComponents.SIZED_INGREDIENT)).inputKey(k("requiredAdditionalInputs")).alt(o("requiredAdditionalInputs")).optional(List.of()).alwaysWrite().functionNames("requiredAdditionalInputs", "additionalInputs");
     RecipeKey<List<AltarEffect>> ALTAR_EFFECTS = list(AstralComponents.of(AstralComponents.ALTAR_EFFECT)).otherKey("effects").optional(List.of()).alwaysWrite().functionNames("effects");
-    RecipeKey<List<AltarRecipeOutputModifier>> ALTAR_MODIFIERS = list(AstralComponents.of(AstralComponents.ALTAR_OUTPUT_MODIFIER)).otherKey("outputModifiers").optional(List.of()).alwaysWrite().functionNames("outputModifiers", "modifiers");
+    RecipeKey<List<AltarRecipeOutputModifier>> ALTAR_MODIFIERS = list(AstralComponents.of(AstralComponents.ALTAR_OUTPUT_MODIFIER)).otherKey(k("outputModifiers")).alt(o("outputModifiers")).optional(List.of()).alwaysWrite().functionNames("outputModifiers", "modifiers");
     RecipeKey<String> ALTAR_BLOCK = StringComponent.ID.instance().otherKey(AstralSorceryKJS.MOD_ID + ":altar").defaultOptional().functionNames("altar", "requiredAltar");
 
     RecipeSchema ALTAR = new RecipeSchema(ALTAR_OUTPUTS, ALTAR_PATTERN, ALTAR_KEY, ALTAR_RELAY, ALTAR_TYPE, ALTAR_FOCUS, ALTAR_SHATTER, ALTAR_DURATION, ALTAR_ONLY_NIGHT, ALTAR_MAY_CHAIN,
@@ -167,24 +176,24 @@ public interface AstralSchemas {
         .constructor(INFUSION_OUTPUT, INFUSION_INPUT)
         .uniqueId(INFUSION_OUTPUT);
 
-    RecipeKey<List<LiquidStarlightRecipeOutputModifier>> STARLIGHT_OUTPUTS = list(AstralComponents.of(AstralComponents.LIQUID_STARLIGHT_OUTPUT)).outputKey("outputModifiers").functionNames("outputModifiers", "modifiers");
-    RecipeKey<CountIngredient> STARLIGHT_INPUT = AstralComponents.of(AstralComponents.OPTIONAL_COUNT_INGREDIENT).inputKey("input");
-    RecipeKey<List<CountIngredient>> STARLIGHT_OTHER = list(AstralComponents.of(AstralComponents.COUNT_INGREDIENT)).inputKey("otherInputs").optional(List.of()).alwaysWrite().functionNames("otherInputs", "extraInputs");
+    RecipeKey<List<LiquidStarlightRecipeOutputModifier>> STARLIGHT_OUTPUTS = list(AstralComponents.of(AstralComponents.LIQUID_STARLIGHT_OUTPUT)).outputKey(k("outputModifiers")).alt(o("outputModifiers")).functionNames("outputModifiers", "modifiers");
+    RecipeKey<SizedIngredient> STARLIGHT_INPUT = AstralComponents.of(AstralComponents.SIZED_INGREDIENT).inputKey("input");
+    RecipeKey<List<SizedIngredient>> STARLIGHT_OTHER = list(AstralComponents.of(AstralComponents.SIZED_INGREDIENT)).inputKey(k("otherInputs")).alt(o("otherInputs")).optional(List.of()).alwaysWrite().functionNames("otherInputs", "extraInputs");
     RecipeKey<Integer> STARLIGHT_DURATION = duration(60);
-    RecipeKey<Integer> STARLIGHT_RANDOM = NumberComponent.INT.otherKey("randomAdditionalDuration").optional(20).alwaysWrite().functionNames("randomDuration", "randomAdditionalDuration");
+    RecipeKey<Integer> STARLIGHT_RANDOM = NumberComponent.INT.otherKey(k("randomAdditionalDuration")).alt(o("randomAdditionalDuration")).optional(20).alwaysWrite().functionNames("randomDuration", "randomAdditionalDuration");
     RecipeKey<Integer> STARLIGHT_COLOR = color("color");
-    RecipeKey<Boolean> STARLIGHT_CONSUMES_LIQUID = BooleanComponent.BOOLEAN.instance().otherKey("consumesLiquid").optional(false).alwaysWrite();
-    RecipeKey<Boolean> STARLIGHT_CONSUMES_INPUTS = BooleanComponent.BOOLEAN.instance().otherKey("consumesInputs").optional(true).alwaysWrite();
+    RecipeKey<Boolean> STARLIGHT_CONSUMES_LIQUID = BooleanComponent.BOOLEAN.instance().otherKey(k("consumesLiquid")).alt(o("consumesLiquid")).optional(false).alwaysWrite();
+    RecipeKey<Boolean> STARLIGHT_CONSUMES_INPUTS = BooleanComponent.BOOLEAN.instance().otherKey(k("consumesInputs")).alt(o("consumesInputs")).optional(true).alwaysWrite();
 
     RecipeSchema LIQUID_STARLIGHT = new RecipeSchema(STARLIGHT_OUTPUTS, STARLIGHT_INPUT, STARLIGHT_OTHER, STARLIGHT_DURATION, STARLIGHT_RANDOM, STARLIGHT_COLOR, STARLIGHT_CONSUMES_LIQUID, STARLIGHT_CONSUMES_INPUTS)
         .factory(factory("liquid_starlight", LiquidStarlightKubeRecipe.class, LiquidStarlightKubeRecipe::new))
         .constructor(STARLIGHT_OUTPUTS, STARLIGHT_INPUT);
 
     RecipeKey<LiquidInteractionResult> INTERACTION_RESULT = AstralComponents.of(AstralComponents.LIQUID_INTERACTION_RESULT).outputKey("result");
-    RecipeKey<SizedFluidIngredient> INTERACTION_A = SizedFluidIngredientComponent.NESTED.instance().inputKey("reactantA");
-    RecipeKey<SizedFluidIngredient> INTERACTION_B = SizedFluidIngredientComponent.NESTED.instance().inputKey("reactantB");
-    RecipeKey<Float> INTERACTION_CHANCE_A = NumberComponent.FLOAT.otherKey("chanceConsumeA").optional(1F).alwaysWrite().functionNames("chanceA", "chanceConsumeA");
-    RecipeKey<Float> INTERACTION_CHANCE_B = NumberComponent.FLOAT.otherKey("chanceConsumeB").optional(1F).alwaysWrite().functionNames("chanceB", "chanceConsumeB");
+    RecipeKey<SizedFluidIngredient> INTERACTION_A = SizedFluidIngredientComponent.NESTED.instance().inputKey(k("reactantA")).alt(o("reactantA"));
+    RecipeKey<SizedFluidIngredient> INTERACTION_B = SizedFluidIngredientComponent.NESTED.instance().inputKey(k("reactantB")).alt(o("reactantB"));
+    RecipeKey<Float> INTERACTION_CHANCE_A = NumberComponent.FLOAT.otherKey(k("chanceConsumeA")).alt(o("chanceConsumeA")).optional(1F).alwaysWrite().functionNames("chanceA", "chanceConsumeA");
+    RecipeKey<Float> INTERACTION_CHANCE_B = NumberComponent.FLOAT.otherKey(k("chanceConsumeB")).alt(o("chanceConsumeB")).optional(1F).alwaysWrite().functionNames("chanceB", "chanceConsumeB");
     RecipeKey<Integer> INTERACTION_WEIGHT = NumberComponent.INT.otherKey("weight").optional(1).alwaysWrite();
 
     RecipeSchema LIQUID_INTERACTION = new RecipeSchema(INTERACTION_RESULT, INTERACTION_A, INTERACTION_B, INTERACTION_CHANCE_A, INTERACTION_CHANCE_B, INTERACTION_WEIGHT)

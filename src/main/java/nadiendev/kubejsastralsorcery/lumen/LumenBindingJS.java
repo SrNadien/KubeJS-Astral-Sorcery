@@ -1,5 +1,6 @@
 package nadiendev.kubejsastralsorcery.lumen;
 
+import nadiendev.kubejsastralsorcery.recipe.AstralFormat;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.util.JsonUtils;
 import dev.latvian.mods.rhino.Context;
@@ -39,8 +40,8 @@ public class LumenBindingJS {
 
     private static JsonObject range(int min, int max) {
         JsonObject range = new JsonObject();
-        range.addProperty("minInclusive", Math.min(min, max));
-        range.addProperty("maxInclusive", Math.max(min, max));
+        range.addProperty(AstralFormat.rangeKey("minInclusive"), Math.min(min, max));
+        range.addProperty(AstralFormat.rangeKey("maxInclusive"), Math.max(min, max));
         return range;
     }
 

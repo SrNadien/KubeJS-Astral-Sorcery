@@ -51,7 +51,15 @@ repositories {
     maven {
         name = 'HellFirePvP'
         url = 'https://maven.hellfiredev.net/'
-        content { includeGroup 'hellfirepvp.observerlib' }
+        content {
+            includeGroup 'hellfirepvp.observerlib'
+            includeGroup 'hellfirepvp.astralsorcery'
+        }
+    }
+    maven {
+        name = 'Curios'
+        url = 'https://maven.theillusivec4.top/'
+        content { includeGroup 'top.theillusivec4.curios' }
     }
     maven {
         name = 'JitPack'
@@ -71,7 +79,10 @@ dependencies {
     implementation "dev.latvian.mods:kubejs-neoforge:${kubejs_version}"
     implementation "dev.latvian.mods:rhino:${rhino_version}"
 
-    implementation("curse.maven:astral-sorcery-241721:${astralsorcery_curse_file}") { transitive = false }
+    implementation("hellfirepvp.astralsorcery:AstralSorcery:${astralsorcery_version}") { transitive = false }
+    if (project.findProperty("with_curios") != "false") {
+        runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}") { transitive = false }
+    }
     implementation("hellfirepvp.observerlib:ObserverLib:${observerlib_version}") { transitive = false }
 
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")

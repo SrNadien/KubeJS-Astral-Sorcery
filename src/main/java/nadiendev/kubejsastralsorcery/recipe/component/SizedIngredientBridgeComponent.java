@@ -13,13 +13,18 @@ import dev.latvian.mods.kubejs.recipe.match.ItemMatch;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.kubejs.util.JsonUtils;
 import dev.latvian.mods.rhino.type.TypeInfo;
-import hellfirepvp.astralsorcery.common.util.data.CountIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.Map;
 
-public record CountIngredientComponent(RecipeComponentType<?> type, Codec<CountIngredient> codec, boolean allowEmpty) implements RecipeComponent<CountIngredient> {
+public record SizedIngredientBridgeComponent(RecipeComponentType<?> type) implements RecipeComponent<SizedIngredient> {
+    @Override
+    public Codec<SizedIngredient> codec() {
+        return SizedIngredient.NESTED_CODEC;
+    }
+
     @Override
     public TypeInfo typeInfo() {
         return SizedIngredientWrapper.TYPE_INFO.or(IngredientWrapper.TYPE_INFO).or(TypeInfo.RAW_MAP);
@@ -31,45 +36,46 @@ public record CountIngredientComponent(RecipeComponentType<?> type, Codec<CountI
     }
 
     @Override
-    public CountIngredient wrap(RecipeScriptContext cx, Object from) {
-        if (from instanceof CountIngredient c) {
-            return c;
+    public SizedIngredient wrap(RecipeScriptContext cx, Object from) {
+        if (from instanceof SizedIngredient sized) {
+            return sized;
         }
 
         if (from instanceof Map<?, ?> || from instanceof JsonObject) {
             JsonObject json = JsonUtils.of(cx.cx(), from).getAsJsonObject();
 
             if (json.has("ingredient")) {
-                return codec.parse(cx.ops().json(), json).getOrThrow();
+                return SizedIngredient.NESTED_CODEC.parse(cx.ops().json(), json).getOrThrow();
             }
+
+            return new SizedIngredient(IngredientWrapper.wrap(cx.cx(), from), 1);
         }
 
-        SizedIngredient sized = (SizedIngredient) cx.cx().jsToJava(from, SizedIngredientWrapper.TYPE_INFO);
-        return new CountIngredient(sized.ingredient(), sized.count());
+        return (SizedIngredient) cx.cx().jsToJava(from, SizedIngredientWrapper.TYPE_INFO);
     }
 
     @Override
-    public boolean matches(RecipeMatchContext cx, CountIngredient value, ReplacementMatchInfo match) {
+    public boolean matches(RecipeMatchContext cx, SizedIngredient value, ReplacementMatchInfo match) {
         return match.match() instanceof ItemMatch m && !value.ingredient().isEmpty() && m.matches(cx, value.ingredient(), match.exact());
     }
 
     @Override
-    public CountIngredient replace(RecipeScriptContext cx, CountIngredient original, ReplacementMatchInfo match, Object with) {
+    public SizedIngredient replace(RecipeScriptContext cx, SizedIngredient original, ReplacementMatchInfo match, Object with) {
         if (!matches(cx, original, match)) {
             return original;
         }
 
-        CountIngredient replacement = wrap(cx, with);
-        return new CountIngredient(replacement.ingredient(), original.count());
+        Ingredient replacement = wrap(cx, with).ingredient();
+        return new SizedIngredient(replacement, original.count());
     }
 
     @Override
-    public boolean isEmpty(CountIngredient value) {
+    public boolean isEmpty(SizedIngredient value) {
         return value == null || value.ingredient().isEmpty();
     }
 
     @Override
-    public void buildUniqueId(UniqueIdBuilder builder, CountIngredient value) {
+    public void buildUniqueId(UniqueIdBuilder builder, SizedIngredient value) {
         var first = IngredientWrapper.first(value.ingredient());
 
         if (!first.isEmpty()) {

@@ -60,7 +60,7 @@ public final class AstralRecipeFilters {
 
         add(event, map.get("altar_tier"), value -> {
             String tier = value.toLowerCase(Locale.ROOT);
-            return json(json -> json.has("requiredType") && tier.equals(json.get("requiredType").getAsString()));
+            return json(json -> AstralFormat.has(json, "requiredType") && tier.equals(AstralFormat.get(json, "requiredType").getAsString()));
         });
 
         add(event, map.get("altar"), value -> {
@@ -71,7 +71,7 @@ public final class AstralRecipeFilters {
 
         add(event, map.get("focus"), value -> {
             String id = id(value, AstralSorceryKJS.AS_ID).toString();
-            return json(json -> json.has("focusConstellation") && id.equals(json.get("focusConstellation").getAsString()));
+            return json(json -> AstralFormat.has(json, "focusConstellation") && id.equals(AstralFormat.get(json, "focusConstellation").getAsString()));
         });
 
         add(event, map.get("constellation"), value -> {
@@ -97,11 +97,11 @@ public final class AstralRecipeFilters {
         add(event, map.get("research_tier"), value -> {
             String tier = value.toLowerCase(Locale.ROOT);
             return json(json -> {
-                if (!json.has("outputModifiers") || !json.get("outputModifiers").isJsonArray()) {
+                if (!AstralFormat.has(json, "outputModifiers") || !AstralFormat.get(json, "outputModifiers").isJsonArray()) {
                     return false;
                 }
 
-                for (JsonElement e : json.getAsJsonArray("outputModifiers")) {
+                for (JsonElement e : AstralFormat.get(json, "outputModifiers").getAsJsonArray()) {
                     if (e.isJsonObject() && "astralsorcery:update_research_tier".equals(string(e.getAsJsonObject(), "type")) && tier.equals(string(e.getAsJsonObject(), "tier"))) {
                         return true;
                     }
@@ -155,7 +155,8 @@ public final class AstralRecipeFilters {
     }
 
     private static String string(JsonObject json, String key) {
-        return json.has(key) && json.get(key).isJsonPrimitive() ? json.get(key).getAsString() : null;
+        JsonElement value = AstralFormat.get(json, key);
+        return value != null && value.isJsonPrimitive() ? value.getAsString() : null;
     }
 
     private static void addString(JsonObject json, String key, Set<String> into) {
@@ -170,8 +171,8 @@ public final class AstralRecipeFilters {
         addString(json, "focusConstellation", into);
         addString(json, "required_constellation", into);
 
-        if (json.has("requiredStarlight") && json.get("requiredStarlight").isJsonArray()) {
-            json.getAsJsonArray("requiredStarlight").forEach(e -> into.add(e.getAsString()));
+        if (AstralFormat.has(json, "requiredStarlight") && AstralFormat.get(json, "requiredStarlight").isJsonArray()) {
+            AstralFormat.get(json, "requiredStarlight").getAsJsonArray().forEach(e -> into.add(e.getAsString()));
         }
     }
 
@@ -179,8 +180,8 @@ public final class AstralRecipeFilters {
         addString(json, "produced_lumen", into);
         addString(json, "lumen_to_crystallize", into);
 
-        if (json.has("requiredLumen") && json.get("requiredLumen").isJsonArray()) {
-            json.getAsJsonArray("requiredLumen").forEach(e -> {
+        if (AstralFormat.has(json, "requiredLumen") && AstralFormat.get(json, "requiredLumen").isJsonArray()) {
+            AstralFormat.get(json, "requiredLumen").getAsJsonArray().forEach(e -> {
                 if (e.isJsonObject()) {
                     addString(e.getAsJsonObject(), "lumen", into);
                 }
@@ -196,8 +197,8 @@ public final class AstralRecipeFilters {
         addString(json, "fluid_input", into);
         addString(json, "generated_fluid", into);
 
-        if (json.has("requiredFluid") && json.get("requiredFluid").isJsonArray()) {
-            json.getAsJsonArray("requiredFluid").forEach(e -> {
+        if (AstralFormat.has(json, "requiredFluid") && AstralFormat.get(json, "requiredFluid").isJsonArray()) {
+            AstralFormat.get(json, "requiredFluid").getAsJsonArray().forEach(e -> {
                 if (e.isJsonObject()) {
                     addString(e.getAsJsonObject(), "id", into);
                 }
@@ -205,8 +206,8 @@ public final class AstralRecipeFilters {
         }
 
         for (String reactant : List.of("reactantA", "reactantB")) {
-            if (json.has(reactant) && json.get(reactant).isJsonObject()) {
-                sizedFluid(json.getAsJsonObject(reactant), into);
+            if (AstralFormat.has(json, reactant) && AstralFormat.get(json, reactant).isJsonObject()) {
+                sizedFluid(AstralFormat.get(json, reactant).getAsJsonObject(), into);
             }
         }
 
@@ -253,8 +254,8 @@ public final class AstralRecipeFilters {
             });
         }
 
-        if (json.has("outputModifiers") && json.get("outputModifiers").isJsonArray()) {
-            json.getAsJsonArray("outputModifiers").forEach(e -> {
+        if (AstralFormat.has(json, "outputModifiers") && AstralFormat.get(json, "outputModifiers").isJsonArray()) {
+            AstralFormat.get(json, "outputModifiers").getAsJsonArray().forEach(e -> {
                 if (e.isJsonObject() && "astralsorcery:set_block".equals(string(e.getAsJsonObject(), "type")) && e.getAsJsonObject().has("block_states")) {
                     e.getAsJsonObject().getAsJsonArray("block_states").forEach(s -> {
                         if (s.isJsonObject() && s.getAsJsonObject().has("data")) {

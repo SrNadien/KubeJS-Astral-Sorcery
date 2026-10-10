@@ -1,5 +1,6 @@
 package nadiendev.kubejsastralsorcery.recipe.kube;
 
+import nadiendev.kubejsastralsorcery.recipe.AstralFormat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -158,7 +159,7 @@ public class AltarKubeRecipe extends AstralKubeRecipe {
 
     public KubeRecipe setComponent(Context cx, String componentType, Object value) {
         JsonObject json = typed("set_data_component");
-        json.addProperty("componentType", componentType);
+        json.addProperty(AstralFormat.key("componentType"), componentType);
         JsonElement element = JsonUtils.of(cx, value);
         json.add("value", element);
         return modifier(cx, json);
@@ -194,8 +195,8 @@ public class AltarKubeRecipe extends AstralKubeRecipe {
 
     public KubeRecipe artifactShardLoot(Context cx, int min, int max) {
         JsonObject range = new JsonObject();
-        range.addProperty("minInclusive", min);
-        range.addProperty("maxInclusive", max);
+        range.addProperty(AstralFormat.rangeKey("minInclusive"), min);
+        range.addProperty(AstralFormat.rangeKey("maxInclusive"), max);
         JsonObject json = typed("generate_artifact_shard_loot");
         json.add("count_range", range);
         return modifier(cx, json);

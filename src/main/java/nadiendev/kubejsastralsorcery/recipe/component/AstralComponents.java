@@ -17,7 +17,6 @@ import hellfirepvp.astralsorcery.common.recipe.altar.output.AltarRecipeOutputMod
 import hellfirepvp.astralsorcery.common.recipe.liquid.interaction.result.LiquidInteractionResult;
 import hellfirepvp.astralsorcery.common.recipe.liquid.output.LiquidStarlightRecipeOutputModifier;
 import hellfirepvp.astralsorcery.common.tile.TileAltar;
-import hellfirepvp.astralsorcery.common.util.data.CountIngredient;
 import nadiendev.kubejsastralsorcery.AstralSorceryKJS;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.Locale;
 
@@ -54,11 +54,7 @@ public final class AstralComponents {
 
     public static final RecipeComponentType<IngredientBridge> INGREDIENT_BRIDGE = RecipeComponentType.unit(AstralSorceryKJS.id("ingredient_bridge"), IngredientBridgeComponent::new);
 
-    public static final RecipeComponentType<CountIngredient> COUNT_INGREDIENT = RecipeComponentType.unit(AstralSorceryKJS.id("count_ingredient"),
-        type -> new CountIngredientComponent(type, CountIngredient.CODEC_NONEMPTY, false));
-
-    public static final RecipeComponentType<CountIngredient> OPTIONAL_COUNT_INGREDIENT = RecipeComponentType.unit(AstralSorceryKJS.id("optional_count_ingredient"),
-        type -> new CountIngredientComponent(type, CountIngredient.CODEC, true));
+    public static final RecipeComponentType<SizedIngredient> SIZED_INGREDIENT = RecipeComponentType.unit(AstralSorceryKJS.id("sized_ingredient"), SizedIngredientBridgeComponent::new);
 
     public static final RecipeComponentType<LumenStack> LUMEN_STACK = RecipeComponentType.unit(AstralSorceryKJS.id("lumen_stack"),
         type -> CodecComponent.of(type, LumenStack.CODEC, LumenStack.class));
@@ -123,8 +119,7 @@ public final class AstralComponents {
         registry.register(FLUID);
         registry.register(COLOR);
         registry.register(INGREDIENT_BRIDGE);
-        registry.register(COUNT_INGREDIENT);
-        registry.register(OPTIONAL_COUNT_INGREDIENT);
+        registry.register(SIZED_INGREDIENT);
         registry.register(LUMEN_STACK);
         registry.register(ALTAR_OUTPUT_MODIFIER);
         registry.register(LIQUID_STARLIGHT_OUTPUT);
